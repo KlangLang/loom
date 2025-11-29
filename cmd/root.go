@@ -14,6 +14,10 @@ func Execute(){
 	switch os.Args[1]{
 	case "new":
         newCommand()
+
+	case "update":
+		updateCommand()
+		
     case "lex":
         lexCommand()
     case "-h", "--help":

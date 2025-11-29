@@ -21,21 +21,28 @@ type Log struct {
 	ERROR_COLOR string
 }
 
-func (l Log) Line() {
-    fmt.Printf("%s──────────────────────────────────────────────────────────%s\n",
-        l.PRIMARY_LIGHT, l.RESET_COLOR)
+func (l Log) Header() {
+	fmt.Printf("%s╭─────────────────────────────────────────────────────────────────────────╮%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s                                            				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s          %s##%s                                				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s            %s##%s                              				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s      %s##  ######%s      	   loom                  			  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s    %s##  ####    ##%s    	   Klang Project Manager 			  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s      %s######%s                                				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s            %s##%s            version %s  •  Klang Core %s	  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.LoomVersion, l.KlangVersion, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s          %s##%s                                				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_LIGHT, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s│%s                                      			           	  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
+	fmt.Printf("%s╰─────────────────────────────────────────────────────────────────────────╯%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
 }
 
-func (l Log) Header() {
-	fmt.Printf("%s╭────────────────────────────────────────────╮%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
-	fmt.Printf("%s│%s  loom — Klang Project Manager              %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
-	fmt.Printf("%s│%s  version %s  •  Klang Core %s     %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.LoomVersion, l.KlangVersion, l.PRIMARY_DARK, l.RESET_COLOR)
-	fmt.Printf("%s╰────────────────────────────────────────────╯%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
+func (l Log) Line() {
+    fmt.Printf("%s───────────────────────────────────────────────────────────────────────────%s\n",
+        l.PRIMARY_LIGHT, l.RESET_COLOR)
 }
 
 func NewLog() Log {
 	return Log{
-		LoomVersion: "v0.1.5",
+		LoomVersion: "v0.1.6",
 		KlangVersion: "v0.1.10",
 		
 		RESET_COLOR:   "\033[0m",

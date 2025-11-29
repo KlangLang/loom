@@ -2,9 +2,19 @@
 set -eu
 
 REPO="KlangLang/loom"
-VERSION="${1:-v0.1.6}"
+VERSION=$(curl -s https://api.github.com/repos/KlangLang/loom/releases/latest \
+    | grep tag_name \
+    | cut -d '"' -f 4)
 
-# Detect OS/ARCH compatible with your release names
+if ! [ -e "$HOME/loom" ]; then
+    echo "loom not installed!" 
+    echo "running install.sh..."
+
+    ./install.sh
+
+    exit 0
+fi
+
 OS="$(uname -s)"
 ARCH="$(uname -m)"
 
@@ -21,22 +31,19 @@ case "$ARCH" in
   i386|i686) ARCH="i386" ;;
 esac
 
-echo "Detected -> $OS-$ARCH"
 FILE_NAME="loom_${OS}_${ARCH}.tar.gz"
 URL="https://github.com/$REPO/releases/download/$VERSION/$FILE_NAME"
 
 echo "Downloading: $URL"
+echo "Updating to $VERSION..."
 
-# create temp dir for safe extraction
 TMPDIR="$(mktemp -d 2>/dev/null || (printf '%s\n' "/tmp/loom_install.$$" && mkdir -p "/tmp/loom_install.$$" && printf "%s\n" "/tmp/loom_install.$$"))"
 trap 'rm -rf "$TMPDIR"' EXIT
 
 curl -L --fail "$URL" -o "$TMPDIR/$FILE_NAME"
 
-# extract into tempdir
 tar -xzf "$TMPDIR/$FILE_NAME" -C "$TMPDIR"
 
-# locate executable named 'loom' inside tempdir (search depth not strict)
 LOOM_BIN="$(find "$TMPDIR" -type f -name loom -print | head -n 1 || true)"
 
 if [ -z "$LOOM_BIN" ]; then
@@ -59,6 +66,9 @@ else
   printf '\nNote: add ~/.local/bin to your PATH if needed (e.g. export PATH="$HOME/.local/bin:$PATH")\n'
 fi
 
+OLD_VERSION=$(loom -V | grep -E '^loom ' | grep -oE 'v[0-9]+\.[0-9]+\.[0-9]+')
+echo "$INSTALLED_VERSION"
+
 echo
-echo "✔ Loom installed!"
+echo "✔ Loom updated from $OLD_VERSION to $VERSION"
 echo "→ Run: loom --version"

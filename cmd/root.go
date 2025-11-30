@@ -22,7 +22,9 @@ func Execute(){
         showHelp()
     case "-V", "--version":
 		showVersion()
-        
+	case "uninstall" :
+		removeCommand()
+
 	default:
 		fmt.Println("Unknown command: '", os.Args[1], "'");
 		showHelp()

@@ -14,7 +14,8 @@ func showHelp() {
 	fmt.Printf("  %snew%s   <project>     Create a new Klang project\n", log.PRIMARY_COLOR, log.RESET_COLOR)
 	fmt.Printf("  %slex%s   <file.k>      Lexicalize a Klang file\n", log.PRIMARY_COLOR, log.RESET_COLOR)
 	fmt.Printf("  %supdate%s	      Update loom (and in the future Klang)\n", log.PRIMARY_COLOR, log.RESET_COLOR)
-	
+	fmt.Printf("  %suninstall%s	      Uninstall loom (and in the future Klang and Klang dependences)\n", log.PRIMARY_COLOR, log.RESET_COLOR)
+
 	fmt.Println()
 	
 	fmt.Printf("%sOptions%s\n", log.PRIMARY_COLOR, log.RESET_COLOR)

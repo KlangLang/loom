@@ -9,27 +9,27 @@ import (
 )
 
 type Log struct {
-	LoomVersion string
+	LoomVersion  string
 	KlangVersion string
-	
+
 	// Colors
-	RESET_COLOR string
+	RESET_COLOR   string
 	PRIMARY_COLOR string
 	PRIMARY_LIGHT string
-	PRIMARY_DARK string
-	ACCENT_COLOR string
-	GRAY_LIGHT string
-	GRAY_MEDIUM string
-	GRAY_DARK string
+	PRIMARY_DARK  string
+	ACCENT_COLOR  string
+	GRAY_LIGHT    string
+	GRAY_MEDIUM   string
+	GRAY_DARK     string
 	NEUTRAL_COLOR string
-	SUCESS_COLOR string
+	SUCESS_COLOR  string
 	WARNING_COLOR string
-	ERROR_COLOR string
+	ERROR_COLOR   string
 }
 
 func (l Log) Header() {
 	width := l.getTerminalWidth()
-	
+
 	if width < 80 {
 		// Modo vertical (9:16)
 		fmt.Printf("%s╭──────────────────────────╮%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
@@ -47,7 +47,7 @@ func (l Log) Header() {
 		fmt.Printf("%s│%s Klang Project Mgr        %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
 		return
 	}
-	
+
 	// Modo horizontal (16:9)
 	fmt.Printf("%s╭─────────────────────────────────────────────────────────────────────────╮%s\n", l.PRIMARY_DARK, l.RESET_COLOR)
 	fmt.Printf("%s│%s                                            				  %s│%s\n", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
@@ -61,31 +61,31 @@ func (l Log) Header() {
 	fmt.Printf("%s│%s                                            				  %s│%s", l.PRIMARY_DARK, l.RESET_COLOR, l.PRIMARY_DARK, l.RESET_COLOR)
 }
 
-func (l Log) newLine(s string){
-		fmt.Printf("%s│%s ", l.PRIMARY_DARK, l.RESET_COLOR)
-		print(s)
-		fmt.Printf("%s│%s \n", l.PRIMARY_DARK, l.RESET_COLOR)
-		
+func (l Log) newLine(s string) {
+	fmt.Printf("%s│%s ", l.PRIMARY_DARK, l.RESET_COLOR)
+	print(s)
+	fmt.Printf("%s│%s \n", l.PRIMARY_DARK, l.RESET_COLOR)
+
 }
 
-func (l Log) addNewLineToHealder(text string){
+func (l Log) addNewLineToHealder(text string) {
 	width := l.getTerminalWidth()
 
 	if width < 80 {
 		fmt.Printf("%s│%s ", l.PRIMARY_DARK, l.RESET_COLOR)
 		fmt.Print(text)
 		fmt.Printf("%s│%s \n", l.PRIMARY_DARK, l.RESET_COLOR)
-	
+
 		return
 	}
-	
+
 	fmt.Printf("\n%s│%s ", l.PRIMARY_DARK, l.RESET_COLOR)
 	fmt.Print(text)
 	fmt.Printf("%s│%s", l.PRIMARY_DARK, l.RESET_COLOR)
-	
+
 }
 
-func (l Log) finalizeBottomheader(){
+func (l Log) finalizeBottomheader() {
 	width := l.getTerminalWidth()
 
 	if width < 80 {
@@ -121,14 +121,14 @@ func (l Log) padCenter(text string, width int) string {
 
 func NewLog() Log {
 	return Log{
-		LoomVersion: "v0.8.1",
+		LoomVersion:  "v0.8.2",
 		KlangVersion: "v0.1.10",
-		
+
 		RESET_COLOR:   "\033[0m",
 		PRIMARY_COLOR: "\033[38;2;127;0;31m",
 		PRIMARY_DARK:  "\033[38;2;90;0;22m",
 		PRIMARY_LIGHT: "\033[38;2;179;0;45m",
-		ACCENT_COLOR:  "\033[38;2;212;0;58m",	
+		ACCENT_COLOR:  "\033[38;2;212;0;58m",
 		GRAY_LIGHT:    "\033[38;2;191;191;191m",
 		GRAY_MEDIUM:   "\033[38;2;138;138;138m",
 		GRAY_DARK:     "\033[38;2;43;43;43m",

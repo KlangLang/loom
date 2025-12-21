@@ -108,10 +108,15 @@ func installCommand() {
 
 type GitHubRelease struct {
 	TagName string `json:"tag_name"`
+	Assets  []struct {
+		Name               string `json:"name"`
+		BrowserDownloadURL string `json:"browser_download_url"`
+	} `json:"assets"`
 }
 
 func getLatestKlangJarURL() (string, error) {
-	const apiURL = "https://api.github.com/repos/KlangLang/Klang/releases/latest"
+	// Muda de /releases/latest para /releases para pegar TODOS os releases
+	const apiURL = "https://api.github.com/repos/KlangLang/Klang/releases"
 
 	client := &http.Client{Timeout: 10 * time.Second}
 
@@ -125,22 +130,28 @@ func getLatestKlangJarURL() (string, error) {
 		return "", fmt.Errorf("GitHub API returned status: %s", resp.Status)
 	}
 
-	var release GitHubRelease
+	var releases []GitHubRelease
 
-	if err := json.NewDecoder(resp.Body).Decode(&release); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&releases); err != nil {
 		return "", fmt.Errorf("failed to parse GitHub API response: %w", err)
 	}
 
-	if release.TagName == "" {
-		return "", fmt.Errorf("release has no tag_name")
+	if len(releases) == 0 {
+		return "", fmt.Errorf("no releases found")
 	}
 
-	jarURL := fmt.Sprintf(
-		"https://github.com/KlangLang/Klang/releases/download/%s/klang.jar",
-		release.TagName,
-	)
+	// O primeiro release da lista é o mais recente (incluindo pre-releases)
+	release := releases[0]
 
-	return jarURL, nil
+	// Procura pelo asset klang.jar
+	for _, asset := range release.Assets {
+		if asset.Name == "klang.jar" {
+			fmt.Printf("Found latest version: %s\n", release.TagName)
+			return asset.BrowserDownloadURL, nil
+		}
+	}
+
+	return "", fmt.Errorf("klang.jar not found in release %s", release.TagName)
 }
 
 func determineShellConfigPath() (string, error) {

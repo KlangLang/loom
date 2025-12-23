@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-const klangBinPathLine = `export PATH="$HOME/.klang/bin:$PATH"`
+const klangBinPathLine = `export PATH="~/.klang/bin:$PATH"`
 const klangBinSubstr = ".klang/bin"
 
 func installCommand() {

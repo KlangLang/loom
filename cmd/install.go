@@ -13,10 +13,18 @@ import (
 	"time"
 )
 
-const klangBinPathLine = `export PATH="~/.klang/bin:$PATH"`
 const klangBinSubstr = ".klang/bin"
 
 func installCommand() {
+	// Verifica se está rodando com sudo
+	if os.Geteuid() == 0 {
+		fmt.Println("❌ ERROR: Do not run 'loom install' with sudo or su!")
+		fmt.Println("   This will install Klang in the root user's home directory.")
+		fmt.Println("   Run without sudo:")
+		fmt.Println("     loom install")
+		return
+	}
+
 	contentToInstall := []string{}
 
 	if len(os.Args) <= 2 {
@@ -62,7 +70,10 @@ func installCommand() {
 	}
 
 	kcPath := filepath.Join(klangBasePath, "bin", "kc")
-	kcContent := []byte("#!/bin/sh\njava -jar \"~/.klang/active/klang.jar\" \"$@\"")
+	klangJarFullPath := filepath.Join(klangBasePath, "active", "klang.jar")
+
+	// Script com caminho absoluto (sem ~)
+	kcContent := []byte(fmt.Sprintf("#!/bin/sh\njava -jar \"%s\" \"$@\"", klangJarFullPath))
 
 	if err = makeFile(kcContent, kcPath); err != nil {
 		return
@@ -71,6 +82,10 @@ func installCommand() {
 	os.Chmod(kcPath, 0755)
 
 	expandedConfigPath := strings.Replace(shellConfigPath, "~", homeUserPath, 1)
+
+	// PATH com caminho absoluto (sem ~)
+	klangBinPath := filepath.Join(klangBasePath, "bin")
+	klangBinPathLine := fmt.Sprintf("export PATH=\"%s:$PATH\"", klangBinPath)
 
 	if found, err := fileContains(expandedConfigPath, klangBinSubstr); err == nil && !found {
 		if err := appendLine(expandedConfigPath, klangBinPathLine); err != nil {
@@ -115,7 +130,6 @@ type GitHubRelease struct {
 }
 
 func getLatestKlangJarURL() (string, error) {
-	// Muda de /releases/latest para /releases para pegar TODOS os releases
 	const apiURL = "https://api.github.com/repos/KlangLang/Klang/releases"
 
 	client := &http.Client{Timeout: 10 * time.Second}
@@ -140,10 +154,8 @@ func getLatestKlangJarURL() (string, error) {
 		return "", fmt.Errorf("no releases found")
 	}
 
-	// O primeiro release da lista é o mais recente (incluindo pre-releases)
 	release := releases[0]
 
-	// Procura pelo asset klang.jar
 	for _, asset := range release.Assets {
 		if asset.Name == "klang.jar" {
 			fmt.Printf("Found latest version: %s\n", release.TagName)

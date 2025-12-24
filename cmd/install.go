@@ -62,7 +62,7 @@ func installCommand() {
 	}
 
 	kcPath := filepath.Join(klangBasePath, "bin", "kc")
-	kcContent := []byte("#!/bin/sh\njava -jar \"$HOME/.klang/active/klang.jar\" \"$@\"")
+	kcContent := []byte("#!/bin/sh\njava -jar \"~/.klang/active/klang.jar\" \"$@\"")
 
 	if err = makeFile(kcContent, kcPath); err != nil {
 		return

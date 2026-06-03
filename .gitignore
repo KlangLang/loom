@@ -1,2 +1,4 @@
 zig-out/
 .zig-cache
+test.fiber
+temp_asm.py

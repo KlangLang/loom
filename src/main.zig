@@ -22,7 +22,7 @@ pub fn main(init: std.process.Init) !void {
 
     const args = try init.minimal.args.toSlice(init.arena.allocator());
 
-    if (try loom.entry(writer, args[1..]) != 0) {
+    if (try loom.cli(writer, args[1..]) != 0) {
         try writer.stderr.interface.print("Erro: ", .{});
         return;
     }

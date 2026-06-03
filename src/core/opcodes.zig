@@ -1,3 +1,5 @@
+const std = @import("std");
+
 pub const Opcodes = enum(u8) {
     NOP = 0x00,
 
@@ -57,4 +59,11 @@ pub const Opcodes = enum(u8) {
     RET = 0x72,
 
     HALT = 0xFF,
+
+    pub fn toOp(bin: u8) Opcodes {
+        inline for (@typeInfo(Opcodes).@"enum".fields) |field| {
+            if (field.value == bin) return @enumFromInt(bin);
+        }
+        return .NOP;
+    }
 };

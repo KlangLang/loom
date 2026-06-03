@@ -1,16 +1,19 @@
 const std = @import("std");
 
-pub const IoWriter = @import("helpers/IoWriter.zig").IoWriter;
 const checkers = @import("helpers/Checkers.zig");
 const helpAndVersion = @import("helpers/HelpAndVersion.zig");
 
-pub fn entry(writer: IoWriter, args: []const []const u8) !u8 {
+pub const IoWriter = @import("helpers/IoWriter.zig").IoWriter;
+const VM = @import("./core/interpreter.zig").VM;
+
+pub fn cli(writer: IoWriter, args: []const []const u8) !u8 {
+    const alloc = writer.sys.arena.allocator();
+
     std.debug.print("DEBUG: ARGUMENTOS RECEBIDOS:\n", .{});
     for (args) |a| {
         try writer.stdout.interface.print("  {s}\n", .{a});
         try writer.stdout.flush();
     }
-    std.debug.print("\n----\n\n", .{});
 
     if (args.len == 0) {
         try helpAndVersion.help(writer);
@@ -51,6 +54,14 @@ pub fn entry(writer: IoWriter, args: []const []const u8) !u8 {
         }
     };
 
-    std.debug.print("Existe\n", .{});
+    const content = try std.Io.Dir.cwd().readFileAlloc(writer.sys.io, file_path, alloc, std.Io.Limit.limited(1024 * 1024));
+    defer alloc.free(content);
+
+    std.debug.print("Lido: {d} bytes\n", .{content.len});
+    std.debug.print("\n----\n\n", .{});
+
+    var vm = VM.init(content, file_path, writer);
+    try vm.entry(alloc);
+
     return 0;
 }
